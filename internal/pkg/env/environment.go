@@ -15,3 +15,13 @@ func GetPort() (string, error) {
 
 	return port, nil
 }
+
+func GetConfigPath() (string, error) {
+	configPath := os.Getenv("GODIS_CONFIG_PATH")
+
+	if configPath == "" {
+		return "", err.ErrConfigPathEmpty
+	}
+
+	return configPath, nil
+}
