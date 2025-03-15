@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package proto.v1;
+
+option go_package = "github.com/ei-sugimoto/godis/proto/v1;v1";
+
+service PingService {
+  rpc Ping(PingRequest) returns (PingResponse) {}
+}
+
+message PingRequest {}
+
+message PingResponse {
+  string message = 1;
+}
