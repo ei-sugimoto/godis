@@ -23,16 +23,12 @@ jobs:
 
       - name: Install dependencies
         run: go mod download
-        working-directory: ./api
 
       - name: Build
         run: go build -v ./...
-        working-directory: ./api
 
       - name: Run tests
         run: go test -v ./...
-        working-directory: ./api
 
       - name: Run Lint
         run: go vet ./...
-        working-directory: ./api
