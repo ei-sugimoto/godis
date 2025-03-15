@@ -30,3 +30,10 @@ func (r *RecordService) Set(ctx context.Context, req *recordv1.SetRequest) (*rec
 	r.DB.Set(req.Key, req.Value)
 	return &recordv1.SetResponse{Ok: true}, nil
 }
+
+func (r *RecordService) Bulk(ctx context.Context, req *recordv1.BulkRequest) (*recordv1.BulkResponse, error) {
+	for _, kv := range req.Requests {
+		r.DB.Set(kv.Key, kv.Value)
+	}
+	return &recordv1.BulkResponse{Ok: true}, nil
+}

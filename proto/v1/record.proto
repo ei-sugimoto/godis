@@ -6,6 +6,7 @@ option go_package = "github.com/ei-sugimoto/godis/proto/v1;v1";
 
 service RecordService {
   rpc Set(SetRequest) returns (SetResponse) {}
+  rpc Bulk(BulkRequest) returns (BulkResponse) {}
   rpc Get(GetRequest) returns (GetResponse) {}
 }
 
@@ -24,4 +25,12 @@ message GetRequest {
 
 message GetResponse {
   string value = 1;
+}
+
+message BulkRequest {
+  repeated SetRequest requests = 1;
+}
+
+message BulkResponse {
+  bool ok = 1;
 }

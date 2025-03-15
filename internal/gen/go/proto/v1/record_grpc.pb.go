@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	RecordService_Set_FullMethodName = "/proto.v1.RecordService/Set"
-	RecordService_Get_FullMethodName = "/proto.v1.RecordService/Get"
+	RecordService_Set_FullMethodName  = "/proto.v1.RecordService/Set"
+	RecordService_Bulk_FullMethodName = "/proto.v1.RecordService/Bulk"
+	RecordService_Get_FullMethodName  = "/proto.v1.RecordService/Get"
 )
 
 // RecordServiceClient is the client API for RecordService service.
@@ -28,6 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RecordServiceClient interface {
 	Set(ctx context.Context, in *SetRequest, opts ...grpc.CallOption) (*SetResponse, error)
+	Bulk(ctx context.Context, in *BulkRequest, opts ...grpc.CallOption) (*BulkResponse, error)
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 }
 
@@ -49,6 +51,16 @@ func (c *recordServiceClient) Set(ctx context.Context, in *SetRequest, opts ...g
 	return out, nil
 }
 
+func (c *recordServiceClient) Bulk(ctx context.Context, in *BulkRequest, opts ...grpc.CallOption) (*BulkResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BulkResponse)
+	err := c.cc.Invoke(ctx, RecordService_Bulk_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *recordServiceClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetResponse)
@@ -64,6 +76,7 @@ func (c *recordServiceClient) Get(ctx context.Context, in *GetRequest, opts ...g
 // for forward compatibility.
 type RecordServiceServer interface {
 	Set(context.Context, *SetRequest) (*SetResponse, error)
+	Bulk(context.Context, *BulkRequest) (*BulkResponse, error)
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	mustEmbedUnimplementedRecordServiceServer()
 }
@@ -77,6 +90,9 @@ type UnimplementedRecordServiceServer struct{}
 
 func (UnimplementedRecordServiceServer) Set(context.Context, *SetRequest) (*SetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Set not implemented")
+}
+func (UnimplementedRecordServiceServer) Bulk(context.Context, *BulkRequest) (*BulkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Bulk not implemented")
 }
 func (UnimplementedRecordServiceServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
@@ -120,6 +136,24 @@ func _RecordService_Set_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RecordService_Bulk_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BulkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RecordServiceServer).Bulk(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RecordService_Bulk_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RecordServiceServer).Bulk(ctx, req.(*BulkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RecordService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetRequest)
 	if err := dec(in); err != nil {
@@ -148,6 +182,10 @@ var RecordService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Set",
 			Handler:    _RecordService_Set_Handler,
+		},
+		{
+			MethodName: "Bulk",
+			Handler:    _RecordService_Bulk_Handler,
 		},
 		{
 			MethodName: "Get",
