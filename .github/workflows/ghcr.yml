@@ -54,8 +54,8 @@ jobs:
       # 4. 新しいタグを作成してプッシュする
       - name: Setup git for pushing tags
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+          git config --global user.email "eikun1014@gmail.com"
+          git config --global user.name "ei-sugimoto"
 
       - name: Create and push new tag
         env:
