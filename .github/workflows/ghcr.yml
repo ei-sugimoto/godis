@@ -20,7 +20,7 @@ jobs:
       - name: Get and increment version tag
         id: vars
         run: |
-          TAG=$(git describe --tags --abbrev=0)
+          TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           echo "Current tag: $TAG"
           IFS='.' read -r -a parts <<< "${TAG#v}"
           major=${parts[0]}
