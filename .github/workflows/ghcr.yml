@@ -47,7 +47,7 @@ jobs:
           file: ./Dockerfile
           target: prod
           tags: |
-            ${{ env.REGISTRY }}/${{ github.repository }}:${{ steps.vars.outputs.TAG }}
+            ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.TAG }}
             ${{ env.REGISTRY }}/${{ github.repository }}:latest
 
       - name: Create and push new tag
