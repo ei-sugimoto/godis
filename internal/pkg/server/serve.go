@@ -5,10 +5,11 @@ import (
 	"log"
 	"net"
 
-	pingv1 "github.com/ei-sugimoto/godis/internal/gen/go/proto/v1"
+	proto "github.com/ei-sugimoto/godis/internal/gen/go/proto/v1"
 	"github.com/ei-sugimoto/godis/internal/pkg/env"
 	"github.com/ei-sugimoto/godis/internal/pkg/err"
 	"github.com/ei-sugimoto/godis/internal/pkg/service"
+	"github.com/ei-sugimoto/godis/internal/pkg/store"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -43,7 +44,10 @@ func (g *GodisServe) Serve() error {
 
 	s := grpc.NewServer()
 
-	pingv1.RegisterPingServiceServer(s, service.NewPingService())
+	db := store.NewDB()
+	proto.RegisterRecordServiceServer(s, service.NewRecordService(db))
+
+	proto.RegisterPingServiceServer(s, service.NewPingService())
 
 	reflection.Register(s)
 
