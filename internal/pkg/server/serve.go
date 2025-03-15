@@ -50,6 +50,8 @@ func (g *GodisServe) Serve() error {
 	eg, ctx := errgroup.WithContext(context.Background())
 
 	eg.Go(func() error {
+		log.Println("Starting server...")
+		defer log.Println("Stopping server...")
 		return s.Serve(g.ln)
 	})
 
@@ -59,5 +61,9 @@ func (g *GodisServe) Serve() error {
 		return nil
 	})
 
-	return eg.Wait()
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+
+	return nil
 }

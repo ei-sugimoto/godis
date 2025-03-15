@@ -15,5 +15,5 @@ func NewPingService() *PingService {
 }
 
 func (p *PingService) Ping(ctx context.Context, req *pingv1.PingRequest) (*pingv1.PingResponse, error) {
-	return &pingv1.PingResponse{Message: "healthy"}, nil
+	return &pingv1.PingResponse{Message: "pong"}, nil
 }

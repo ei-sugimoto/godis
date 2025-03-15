@@ -6,6 +6,7 @@ package cmd
 import (
 	"log"
 
+	"github.com/ei-sugimoto/godis/internal/pkg/server"
 	"github.com/spf13/cobra"
 )
 
@@ -35,5 +36,14 @@ func init() {
 }
 
 func run() error {
+	s := server.NewGodisServe()
+	if err := s.Listen(); err != nil {
+		return err
+	}
+
+	if err := s.Serve(); err != nil {
+		return err
+	}
+
 	return nil
 }
