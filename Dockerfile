@@ -19,7 +19,7 @@ RUN --mount=source=.,target=. \
     go build -o /go/bin/main .
 
 
-FROM gcr.io/distroless/cc:latest
+FROM gcr.io/distroless/cc:latest AS prod
 
 COPY --from=build /go/bin/main /go/bin/main
 

@@ -1,0 +1,56 @@
+name: push ghcr
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 1. バージョンタグを取得する
+      - name: Get and increment version tag
+        id: vars
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          echo "Current tag: $TAG"
+          IFS='.' read -r -a parts <<< "${TAG#v}"
+          major=${parts[0]}
+          minor=${parts[1]}
+          patch=${parts[2]}
+          new_patch=$((patch + 1))
+          NEW_TAG="v${major}.${minor}.${new_patch}"
+          echo "New tag: $NEW_TAG"
+          echo "TAG=$NEW_TAG" >> $GITHUB_ENV
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 3. コンテナイメージをビルド・pushする
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: .
+          file: ./Dockerfile
+          target: prod
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.repository }}:${{ steps.vars.outputs.TAG }}
+            ${{ env.REGISTRY }}/${{ github.repository }}:latest
+
+      - name: Create and push new tag
+        run: |
+          git tag ${{ env.TAG }}
+          git push origin ${{ env.TAG }}
