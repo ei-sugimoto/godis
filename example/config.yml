@@ -1,0 +1,5 @@
+users:
+  - name: "readonly"
+    pass: "readonly"
+  - name: "admin"
+    pass: "admin"

@@ -1,0 +1,8 @@
+services:
+  godis:
+    image: ghcr.io/ei-sugimoto/godis:latest
+    ports:
+      - '6379:6379'
+    environment:
+      - GODIS_PORT=6379
+      - GODIS_CONFIG_PATH=./config.yml
