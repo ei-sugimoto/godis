@@ -6,8 +6,10 @@ import (
 	"net"
 
 	proto "github.com/ei-sugimoto/godis/internal/gen/go/proto/v1"
+	"github.com/ei-sugimoto/godis/internal/pkg/config"
 	"github.com/ei-sugimoto/godis/internal/pkg/env"
 	"github.com/ei-sugimoto/godis/internal/pkg/err"
+	"github.com/ei-sugimoto/godis/internal/pkg/server/middleware"
 	"github.com/ei-sugimoto/godis/internal/pkg/service"
 	"github.com/ei-sugimoto/godis/internal/pkg/store"
 	"golang.org/x/sync/errgroup"
@@ -42,7 +44,22 @@ func (g *GodisServe) Serve() error {
 		return err.ErrNoListener
 	}
 
-	s := grpc.NewServer()
+	pt, err := env.GetConfigPath()
+	if err != nil {
+		return err
+	}
+
+	c, err := config.ParseConfig(pt)
+	if err != nil {
+		return err
+	}
+
+	s := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			middleware.LoggingInterceptor,
+			middleware.KeyInterceptor(c.APIKey),
+		),
+	)
 
 	db := store.NewDB()
 	proto.RegisterRecordServiceServer(s, service.NewRecordService(db))

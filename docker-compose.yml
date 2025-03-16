@@ -10,3 +10,4 @@ services:
       - .:/app
     environment:
       - GODIS_PORT=6379
+      - GODIS_CONFIG_PATH=./example/config.yml

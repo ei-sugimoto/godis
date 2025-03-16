@@ -3,3 +3,4 @@ users:
     pass: "readonly"
   - name: "admin"
     pass: "admin"
+apikey: "1234567890"
